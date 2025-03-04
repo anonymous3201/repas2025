@@ -424,8 +424,7 @@ export default function GestionRepas() {
           {activeDate && (
             <div className="mb-4 md:mb-6 text-center">
               <p className="text-lg font-semibold text-blue-700">
-                Format Mois/Jours/Annee
-                <br />
+               
                 Date active :
               </p>
               <p className="text-xl font-bold text-blue-900">
