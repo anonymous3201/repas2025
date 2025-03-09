@@ -432,9 +432,9 @@ export default function GestionRepas() {
           {activeDate && (
             <div className="mb-4 md:mb-6 text-center">
               <p className="text-lg font-semibold text-blue-700">
-                Format Mois/Jours/Annee
+                
                 <br />
-                Date active :
+                Nous somme le :
               </p>
               <p className="text-xl font-bold text-blue-900">
                 {activeDate.toLocaleDateString()}
@@ -482,10 +482,10 @@ export default function GestionRepas() {
               <span role="img" aria-label="Attention">
                 ⚠️
               </span>{" "}
-              Réservez tous les jours{" "}
+              OUPS! Réservez tous les jours{" "}
               <span className="text-blue-600">sauf</span>{" "}
-              <span className="text-red-700 underline">Mercredi</span> et{" "}
-              <span className="text-red-700 underline">Dimanche</span>{" "}
+              <span className="text-red-700 underline">Mercredi jusqu'a 23h 59</span> et{" "}
+              <span className="text-red-700 underline">Dimanche jusqu'a 23h 59</span>{" "}
               <span role="img" aria-label="Repas">
                 🍽️
               </span>
