@@ -432,7 +432,6 @@ export default function GestionRepas() {
           {activeDate && (
             <div className="mb-4 md:mb-6 text-center">
               <p className="text-lg font-semibold text-blue-700">
-                
                 <br />
                 Nous somme le :
               </p>
@@ -483,9 +482,11 @@ export default function GestionRepas() {
                 ⚠️
               </span>{" "}
               OUPS! Réservez tous les jours{" "}
-              <span className="text-blue-600">sauf</span>{" "}
-              <span className="text-red-700 underline">Mercredi jusqu'a 23h 59</span> et{" "}
-              <span className="text-red-700 underline">Dimanche jusqu'a 23h 59</span>{" "}
+              <span className="text-blue-600">
+                sauf les jours de livraison:
+              </span>{" "}
+              <span className="text-red-700 underline">Mercredi</span> et{" "}
+              <span className="text-red-700 underline">Dimanche</span>{" "}
               <span role="img" aria-label="Repas">
                 🍽️
               </span>
