@@ -289,10 +289,11 @@ export default function GestionRepas() {
     const doc = new jsPDF();
 
     // Définir les en-têtes du tableau
-    const headers = [["Nom", "Prénom", "Repas", "Date"]];
+    const headers = [["#", "Nom", "Prénom", "Repas", "Date"]]; // Ajout de la colonne "#"
 
-    // Préparer les données du tableau
-    const data = reservations.map((res) => [
+    // Préparer les données du tableau avec les numéros de ligne
+    const data = reservations.map((res, index) => [
+      index + 1, // Numéro de ligne
       res.nom,
       res.prenom,
       res.repas,
@@ -308,7 +309,6 @@ export default function GestionRepas() {
     // Télécharger le PDF
     doc.save("reservations.pdf");
   };
-
   // Fonction pour déterminer le prochain jour de réservation
   const getNextReservationDate = (date) => {
     const dayOfWeek = date.getDay(); // Jour de la semaine actuel (0 = dimanche, 3 = mercredi)
@@ -519,7 +519,9 @@ export default function GestionRepas() {
               </ul>
               {/* Pagination */}
 
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center mt-4 flex-wrap max-w-[300px] mx-auto gap-2">
+                {" "}
+                {/* Conteneur flexible avec retour à la ligne */}
                 {Array.from(
                   {
                     length: Math.ceil(
@@ -530,11 +532,11 @@ export default function GestionRepas() {
                     <button
                       key={i + 1}
                       onClick={() => paginate(i + 1)}
-                      className={`mx-1 px-3 py-1 rounded-lg ${
+                      className={`px-3 py-1 rounded-lg ${
                         currentPage === i + 1
                           ? "bg-blue-500 text-white"
-                          : "bg-gray-200"
-                      }`}
+                          : "bg-gray-200 hover:bg-gray-300"
+                      } transition-colors`}
                     >
                       {i + 1}
                     </button>
