@@ -53,13 +53,23 @@ export default function GestionRepas() {
   const [prayerTimes, setPrayerTimes] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+  const [isFormActive, setIsFormActive] = useState(false);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const reservationsPerPage = 5; // 5 réservations par page
 
   // Fonction pour vérifier si la date est un mercredi ou un dimanche en mars 2025
-  
+  const isActiveDay = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const dayOfWeek = date.getDay();
+
+    // Le formulaire est ouvert tous les jours de mars 2025 sauf mercredi (3) et dimanche (0)
+    if (year === 2025 && month === 3) {
+      return dayOfWeek !== 3 && dayOfWeek !== 0; // true si ce n'est pas mercredi ou dimanche
+    }
+    return false; // Hors de mars 2025
+  };
   // Charger la date active et les heures de prières au démarrage
   useEffect(() => {
     const docRef = doc(db, "active_dates", "current");
@@ -80,7 +90,7 @@ export default function GestionRepas() {
 
             // Mettre à jour la date active et vider la liste des réservations
             setActiveDate(newDate);
-            
+            setIsFormActive(isActiveDay(newDate));
             setReservations([]); // Vider la liste des réservations
           }
         }
@@ -94,8 +104,6 @@ export default function GestionRepas() {
     return () => unsubscribe();
   }, [activeDate]); // Déclencher l'effet lorsque activeDate change
   // Récupérer les heures de prières via l'API Aladhan
-
- 
   const fetchPrayerTimes = async () => {
     setLoading(true);
     const today = new Date();
@@ -335,7 +343,7 @@ export default function GestionRepas() {
       {/* Barre de navigation en haut */}
       <div className="absolute top-0 left-0 right-0 bg-white bg-opacity-90 p-4 flex flex-col md:flex-row justify-between items-center z-20">
         <h1 className="text-xl md:text-2xl font-bold text-blue-700 mb-2 md:mb-0">
-          AEMB: Réserver votre Repas
+          AMB: Réserver votre Repas
         </h1>
 
         {/* Connexion Admin */}
@@ -424,7 +432,8 @@ export default function GestionRepas() {
           {activeDate && (
             <div className="mb-4 md:mb-6 text-center">
               <p className="text-lg font-semibold text-blue-700">
-               
+                Format Mois/Jours/Annee
+                <br />
                 Date active :
               </p>
               <p className="text-xl font-bold text-blue-900">
@@ -438,7 +447,7 @@ export default function GestionRepas() {
           )}
 
           {/* Formulaire de réservation pour les clients */}
-          {!admin ? (
+          {!admin && isFormActive ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="text"
@@ -468,7 +477,20 @@ export default function GestionRepas() {
                 Réserver
               </button>
             </form>
-          )  : null}
+          ) : !admin ? (
+            <div className="mb-4 md:mb-6 text-center text-red-600 text-xl font-bold bg-red-50 p-4 rounded-lg border border-red-200 shadow-sm">
+              <span role="img" aria-label="Attention">
+                ⚠️
+              </span>{" "}
+              Réservez tous les jours{" "}
+              <span className="text-blue-600">sauf</span>{" "}
+              <span className="text-red-700 underline">Mercredi</span> et{" "}
+              <span className="text-red-700 underline">Dimanche</span>{" "}
+              <span role="img" aria-label="Repas">
+                🍽️
+              </span>
+            </div>
+          ) : null}
 
           {/* Espace Admin (liste des réservations) */}
           {admin && (
