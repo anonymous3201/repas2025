@@ -59,50 +59,44 @@ export default function GestionRepas() {
   const reservationsPerPage = 5; // 5 réservations par page
 
   // Fonction pour vérifier si la date est un mercredi ou un dimanche en mars 2025
-  const isActiveDay = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const dayOfWeek = date.getDay();
+  // Fonction pour vérifier si la date est un mercredi ou un dimanche en mars 2025
+ const isActiveDay = (date) => {
+   const year = date.getFullYear();
+   const month = date.getMonth() + 1; // Les mois sont indexés à partir de 0 (janvier = 0)
+   const dayOfWeek = date.getDay(); // Jour de la semaine (0 = dimanche, 3 = mercredi)
 
-    // Le formulaire est ouvert tous les jours de mars 2025 sauf mercredi (3) et dimanche (0)
-    if (year === 2025 && month === 3) {
-      return dayOfWeek !== 3 && dayOfWeek !== 0; // true si ce n'est pas mercredi ou dimanche
-    }
-    return false; // Hors de mars 2025
-  };
+   // Le formulaire est ouvert tous les jours de mars 2025 sauf mercredi (3) et dimanche (0)
+   if (year === 2025 && month === 3) {
+     return dayOfWeek !== 3 && dayOfWeek !== 0; // true si ce n'est pas mercredi ou dimanche
+   }
+   return false; // Hors de mars 2025
+ };
   // Charger la date active et les heures de prières au démarrage
   useEffect(() => {
     const docRef = doc(db, "active_dates", "current");
 
-    const unsubscribe = onSnapshot(docRef, async (docSnap) => {
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const firestoreDate = docSnap.data().date;
-        const newDate = firestoreDate.toDate();
+        const newDate = firestoreDate.toDate(); // Convertir en objet Date
 
         if (isNaN(newDate.getTime())) {
           console.error("Date invalide :", firestoreDate);
           setError("La date active est invalide.");
         } else {
-          // Vérifier si la date active a changé
-          if (activeDate.toDateString() !== newDate.toDateString()) {
-            // Supprimer les réservations de l'ancienne date
-            await deleteReservationsForDate(activeDate);
-
-            // Mettre à jour la date active et vider la liste des réservations
-            setActiveDate(newDate);
-            setIsFormActive(isActiveDay(newDate));
-            setReservations([]); // Vider la liste des réservations
-          }
+          // Mettre à jour la date active
+          setActiveDate(newDate);
+          // Mettre à jour l'état du formulaire
+          setIsFormActive(isActiveDay(newDate));
         }
       } else {
         setError("Aucune date active trouvée.");
       }
     });
-
-    fetchPrayerTimes();
-
+        fetchPrayerTimes();
+    // Nettoyer l'écouteur lors du démontage du composant
     return () => unsubscribe();
-  }, [activeDate]); // Déclencher l'effet lorsque activeDate change
+  }, []); // Déclencher uniquement au montage du composant // Déclencher l'effet lorsque activeDate change
   // Récupérer les heures de prières via l'API Aladhan
   const fetchPrayerTimes = async () => {
     setLoading(true);
